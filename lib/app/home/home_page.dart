@@ -1,37 +1,48 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import '../shared/const/image_api.dart';
+import '../shared/models/image.dart';
 import '../shared/repositories/get_image.dart';
 import 'home_controller.dart';
 import 'widgets/search_bar/search_bar.dart';
 
 class HomePage extends StatelessWidget {
   final _homeController = HomeController(GetImageRepository(
-      dio: Dio(BaseOptions(baseUrl: BASE_URL)),
-      accessKey: ACCESS_KEY,
-      randomImageEndpoint: GET_RANDOM_IMAGE_ENDPOINT));
+    endpoint: GET_IMAGE_ENDPOINT,
+    dio: Dio(BaseOptions(baseUrl: BASE_URL)),
+  ));
 
   @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery.of(context).size;
+    final _deviceInfo = MediaQuery.of(context);
+
+    final _width = _deviceInfo.size.width;
+    final _height = _deviceInfo.size.height;
+    final _dpr = _deviceInfo.devicePixelRatio;
 
     return Stack(
       children: [
-        FutureBuilder(
-            future: _homeController.getRandomImage(_size.height),
-            builder: (_, snapshot) => snapshot.hasData
-                ? FadeInImage.memoryNetwork(
-                    width: _size.width,
-                    height: _size.height,
-                    fit: BoxFit.fill,
-                    placeholder: kTransparentImage,
-                    image: snapshot.data)
-                : Container(
-                    color: Colors.black,
-                  )),
+        FutureBuilder<ImageModel>(
+          future: _homeController.getRandomImage(),
+          builder: (_, snapshot) => snapshot.hasData
+              ? Opacity(
+                  opacity: .3,
+                  child: AspectRatio(
+                      aspectRatio: .9,
+                      child: BlurHash(
+                        curve: Curves.easeInOutBack,
+                        imageFit: BoxFit.cover,
+                        image: snapshot.data
+                            .urlWithResizedImage(_width, _height, _dpr),
+                        hash: snapshot.data.blurHash,
+                      )))
+              : Container(
+                  color: Colors.black,
+                ),
+        ),
         SafeArea(
           minimum: const EdgeInsets.symmetric(vertical: 35.0, horizontal: 25.0),
           child: Scaffold(
@@ -40,14 +51,14 @@ class HomePage extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: Container(
-                    height: _size.width * .1,
-                    width: _size.width * .1,
+                    height: _width * .1,
+                    width: _width * .1,
                     decoration: BoxDecoration(
                         color: Colors.white, shape: BoxShape.circle),
                   ),
                 ),
                 SizedBox(
-                  height: _size.height * .1,
+                  height: _height * .1,
                 ),
                 Align(
                     alignment: Alignment.centerLeft,
@@ -69,13 +80,13 @@ class HomePage extends StatelessWidget {
                       ),
                     )),
                 SizedBox(
-                  height: _size.height * .06,
+                  height: _height * .06,
                 ),
                 SearchBar(
-                  width: _size.width,
-                  height: _size.height * .07,
+                  width: _width,
+                  height: _height * .07,
                 ),
-                SizedBox(height: _size.height * .2),
+                SizedBox(height: _height * .16),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
