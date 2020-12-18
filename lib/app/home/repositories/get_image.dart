@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import '../../shared/models/image.dart';
 
-import '../models/image.dart';
 import 'get_image_interface.dart';
 
 class GetImageRepository implements IGetImage {

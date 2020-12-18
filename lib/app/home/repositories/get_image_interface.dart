@@ -1,4 +1,4 @@
-import '../models/image.dart';
+import '../../shared/models/image.dart';
 
 abstract class IGetImage {
   Future<ImageModel> getImageByCountry(Map<String, dynamic> parameters);
