@@ -31,6 +31,7 @@ dependencies:
   google_fonts: ^1.1.1
   flutter_blurhash: ^0.5.0
   dio: ^3.0.10
+  rxdart: ^0.25.0
 
 dev_dependencies:
   flutter_test:
