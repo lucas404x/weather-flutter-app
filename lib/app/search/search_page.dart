@@ -1,7 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../shared/const/weather_search_api.dart' as weather;
+import '../shared/models/location.dart';
+import 'repositories/get_weather_info.dart';
 import 'search_controller.dart';
+import 'widgets/city_card/city_card.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -9,7 +14,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _searchController = SearchController(TextEditingController());
+  final _searchController = SearchController(GetWeatherInfoRepository(
+      getMatchLocationsEndpoint: weather.CITIES_MATCH_ENDPOINT,
+      dio: Dio(BaseOptions(baseUrl: weather.BASE_URL))));
 
   @override
   void dispose() {
@@ -25,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           TextField(
-            controller: _searchController.textEditingController,
+            onChanged: _searchController.inputLocation,
             style: GoogleFonts.openSans(color: Colors.white),
             cursorColor: Colors.white,
             decoration: InputDecoration(
@@ -45,9 +52,28 @@ class _SearchPageState extends State<SearchPage> {
                     borderSide: BorderSide(color: Colors.white, width: 1.4))),
             autofocus: true,
           ),
-          StreamBuilder(
-            stream: _searchController.suggestionsOutput,
-            builder: (_, snapshot) => Container(),
+          Expanded(
+            child: StreamBuilder<List<LocationModel>>(
+                stream: _searchController.suggestionsOutput,
+                builder: (_, snapshot) =>
+                    !snapshot.hasData || snapshot.data.length == 0
+                        ? Center(
+                            child: Text(
+                              "There are no results for what you are typing",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.openSans(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 24),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.only(top: 30),
+                            itemBuilder: (_, index) => CityCard(
+                                locationModel: snapshot.data[index],
+                                buildContext: context,
+                                onTap: _searchController.selectLocation),
+                            itemCount: snapshot.data.length)),
           )
         ]),
       ),
