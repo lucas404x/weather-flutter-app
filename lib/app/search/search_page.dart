@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../shared/const/weather_search_api.dart' as weather;
 import '../shared/models/location.dart';
-import 'repositories/get_weather_info.dart';
+import '../shared/repositories/get_weather_info.dart';
 import 'search_controller.dart';
 import 'widgets/city_card/city_card.dart';
 
