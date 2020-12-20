@@ -5,8 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../shared/const/image_api.dart';
 import '../shared/models/image.dart';
-import '../shared/repositories/get_image.dart';
 import 'home_controller.dart';
+import 'repositories/get_image.dart';
 import 'widgets/search_bar/search_bar.dart';
 
 class HomePage extends StatelessWidget {
