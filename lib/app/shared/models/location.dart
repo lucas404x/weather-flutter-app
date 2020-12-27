@@ -14,7 +14,7 @@ class LocationModel {
       @required this.weather,
       @required this.temperatureInCelsius});
 
-  Map<String, dynamic> toMap(Map data) => {
+  Map<String, dynamic> toMap() => {
         'name': name,
         'locationKey': locationKey,
         'administrativeArea': administrativeArea,

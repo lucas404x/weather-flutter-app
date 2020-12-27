@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 import '../shared/const/weather_search_api.dart' as weather;
 import '../shared/models/location.dart';
-import 'repositories/get_weather_info_interface.dart';
+import '../shared/repositories/get_weather_info_interface.dart';
 
 class SearchController {
   SearchController(this.getWeatherInfo) {
