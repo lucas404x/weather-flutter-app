@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'login_controller.dart';
+import 'repositories/auth_firebase.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,7 +11,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _loginController = LoginController(GlobalKey<FormState>());
+  GlobalKey<FormState> _formKey;
+  LoginController _loginController;
+
+  TextEditingController _emailController;
+  TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+
+    _formKey = GlobalKey<FormState>();
+    _loginController = LoginController(AuthFirebase(FirebaseAuth.instance),
+        _formKey, _emailController, _passwordController);
+  }
 
   @override
   void dispose() {
@@ -29,13 +46,13 @@ class _LoginPageState extends State<LoginPage> {
         width: _size.width,
         height: _size.height,
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        const  SizedBox(
+          const SizedBox(
             height: 50,
           ),
           FlutterLogo(
             size: 80,
           ),
-         const SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Text(
@@ -48,10 +65,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Expanded(
             child: Form(
-              key: _loginController.formKey,
+              key: _formKey,
               child: Column(
                 children: [
                   TextFormField(
+                    controller: _emailController,
                     validator: _loginController.validateEmail,
                     keyboardType: TextInputType.emailAddress,
                     cursorColor: Colors.white,
@@ -68,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 18),
                   TextFormField(
+                    controller: _passwordController,
                     validator: _loginController.validatePassword,
                     keyboardType: TextInputType.visiblePassword,
                     cursorColor: Colors.white,
@@ -92,8 +111,10 @@ class _LoginPageState extends State<LoginPage> {
                         borderSide: BorderSide(color: Colors.purple),
                         highlightedBorderColor: Colors.white,
                         splashColor: Colors.white.withOpacity(.1),
-                        onPressed:
-                            !snapshot.data ? _loginController.doAuth : null,
+                        onPressed: !snapshot.data
+                            ? () =>
+                                _loginController.doAuth(Scaffold.of(context))
+                            : null,
                         child: !snapshot.data
                             ? Text(
                                 'Sign in',
