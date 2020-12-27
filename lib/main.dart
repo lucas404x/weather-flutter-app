@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'app/home/home_page.dart';
+import 'app/login/login_page.dart';
 
 void main() {
   runApp(MaterialApp(
-    theme: ThemeData(
-      scaffoldBackgroundColor: Colors.transparent
-    ),
-    debugShowCheckedModeBanner: false,
-    home: HomePage()));
+      theme: ThemeData(scaffoldBackgroundColor: Colors.transparent),
+      debugShowCheckedModeBanner: false,
+      home: LoginPage()));
 }
