@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:weather_app/app/shared/errors/auth_exception.dart';
 
+import '../shared/errors/auth_exception.dart';
+import '../shared/models/user.dart';
 import 'repositories/auth_interface.dart';
 
 class LoginController {
@@ -28,10 +29,22 @@ class LoginController {
       'password': _passwordController.text
     };
 
+    UserModel userModel;
+
     try {
-      await _auth.signIn(credentials);
+      userModel = await _auth.signIn(credentials);
     } on AuthException catch (e) {
       if (e.runtimeType == WrongCredentialsException) {
+        _stateButtonController.add(false);
+        var snackbar = SnackBar(content: Text(e.description));
+        scaffoldState.showSnackBar(snackbar);
+
+        return;
+      }
+
+      try {
+        userModel = await _auth.signUp(credentials);
+      } on PasswordIsTooWeak catch (e) {
         _stateButtonController.add(false);
         var snackbar = SnackBar(content: Text(e.description));
         scaffoldState.showSnackBar(snackbar);

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:weather_app/app/shared/errors/auth_exception.dart';
+import '../../shared/errors/auth_exception.dart';
 
 import '../../shared/models/firebase_user_model.dart';
 import '../../shared/models/user.dart';
@@ -32,8 +32,17 @@ class AuthFirebase implements IAuth {
   }
 
   @override
-  Future<void> signUp(Map<String, dynamic> credentials) {
-    // TODO: implement signUp
-    throw UnimplementedError();
+  Future<UserModel> signUp(Map<String, dynamic> credentials) async {
+    UserCredential userCredential;
+
+    try {
+      userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: credentials["email"], password: credentials["password"]);
+    } on FirebaseAuthException catch (e) {
+      throw PasswordIsTooWeak(e.code,
+          "We tried to create your account but the password is too weak.");
+    }
+
+    return FirebaseUserModel.fromFirebaseUser(userCredential.user);
   }
 }
