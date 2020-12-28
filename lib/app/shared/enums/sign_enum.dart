@@ -1,0 +1,1 @@
+enum Sign { IS_SIGNING, IS_NOT_SIGNING }

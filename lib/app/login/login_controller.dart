@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../shared/enums/sign_enum.dart';
 import '../shared/errors/auth_exception.dart';
 import '../shared/models/user.dart';
 import 'repositories/auth_interface.dart';
@@ -13,8 +14,8 @@ class LoginController {
   TextEditingController _emailController;
   TextEditingController _passwordController;
 
-  final _stateButtonController = StreamController<bool>();
-  Stream<bool> get isSigningIn => _stateButtonController.stream;
+  final _stateButtonController = StreamController<Sign>();
+  Stream<Sign> get isSigningIn => _stateButtonController.stream;
 
   LoginController(this._auth, this._formKey, this._emailController,
       this._passwordController);
@@ -22,7 +23,7 @@ class LoginController {
   Future<void> doAuth(ScaffoldState scaffoldState) async {
     if (!_formKey.currentState.validate()) return;
     // changing button to circular progress
-    _stateButtonController.add(true);
+    _stateButtonController.add(Sign.IS_SIGNING);
 
     Map<String, dynamic> credentials = {
       'email': _emailController.text,
@@ -35,7 +36,7 @@ class LoginController {
       userModel = await _auth.signIn(credentials);
     } on AuthException catch (e) {
       if (e.runtimeType == WrongCredentialsException) {
-        _stateButtonController.add(false);
+        _stateButtonController.add(Sign.IS_NOT_SIGNING);
         var snackbar = SnackBar(content: Text(e.description));
         scaffoldState.showSnackBar(snackbar);
 
@@ -45,7 +46,7 @@ class LoginController {
       try {
         userModel = await _auth.signUp(credentials);
       } on PasswordIsTooWeak catch (e) {
-        _stateButtonController.add(false);
+        _stateButtonController.add(Sign.IS_NOT_SIGNING);
         var snackbar = SnackBar(content: Text(e.description));
         scaffoldState.showSnackBar(snackbar);
 
@@ -54,7 +55,7 @@ class LoginController {
     }
 
     await Future.delayed(Duration(seconds: 3));
-    _stateButtonController.add(false);
+    _stateButtonController.add(Sign.IS_NOT_SIGNING);
   }
 
   String validateEmail(String email) {
