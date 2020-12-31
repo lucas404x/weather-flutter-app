@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../shared/const/image_api.dart';
+import '../shared/const/weather_search_api.dart' as weather;
+import '../shared/const/image_api.dart' as image;
+import '../shared/data/firestore_database.dart';
 import '../shared/models/image.dart';
 import '../shared/models/user.dart';
+import '../shared/repositories/get_weather_info.dart';
 import 'home_controller.dart';
 import 'repositories/get_image.dart';
 import 'widgets/search_bar/search_bar.dart';
@@ -24,10 +28,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _homeController = HomeController(GetImageRepository(
-      endpoint: GET_IMAGE_ENDPOINT,
-      dio: Dio(BaseOptions(baseUrl: BASE_URL)),
-    ));
+    _homeController = HomeController(
+        getWeatherInfo: GetWeatherInfoRepository(
+            Dio(BaseOptions(baseUrl: weather.BASE_URL))),
+        getImage: GetImageRepository(
+          Dio(BaseOptions(baseUrl: image.BASE_URL)),
+        ),
+        storage: FirestoreDatabase(FirebaseFirestore.instance),
+        userModel: widget.userModel);
+
     super.initState();
   }
 
@@ -64,18 +73,6 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             body: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    height: _width * .1,
-                    width: _width * .1,
-                    decoration: BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
-                  ),
-                ),
-                SizedBox(
-                  height: _height * .1,
-                ),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Text(

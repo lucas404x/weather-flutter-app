@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'user.dart';
 
 class FirebaseUserModel extends UserModel {
-  final String uid;
+  final dynamic uid;
   final String email;
 
   FirebaseUserModel({@required this.uid, @required this.email})

@@ -14,9 +14,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _searchController = SearchController(GetWeatherInfoRepository(
-      getMatchLocationsEndpoint: weather.CITIES_MATCH_ENDPOINT,
-      dio: Dio(BaseOptions(baseUrl: weather.BASE_URL))));
+  final _searchController = SearchController(
+      GetWeatherInfoRepository(Dio(BaseOptions(baseUrl: weather.BASE_URL))));
 
   @override
   void dispose() {
