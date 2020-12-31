@@ -5,15 +5,31 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../shared/const/image_api.dart';
 import '../shared/models/image.dart';
+import '../shared/models/user.dart';
 import 'home_controller.dart';
 import 'repositories/get_image.dart';
 import 'widgets/search_bar/search_bar.dart';
 
-class HomePage extends StatelessWidget {
-  final _homeController = HomeController(GetImageRepository(
-    endpoint: GET_IMAGE_ENDPOINT,
-    dio: Dio(BaseOptions(baseUrl: BASE_URL)),
-  ));
+class HomePage extends StatefulWidget {
+  final UserModel userModel;
+
+  HomePage({Key key, @required this.userModel}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  HomeController _homeController;
+
+  @override
+  void initState() {
+    _homeController = HomeController(GetImageRepository(
+      endpoint: GET_IMAGE_ENDPOINT,
+      dio: Dio(BaseOptions(baseUrl: BASE_URL)),
+    ));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

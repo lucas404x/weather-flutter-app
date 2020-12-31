@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:weather_app/app/home/home_page.dart';
 
 import '../shared/enums/sign_enum.dart';
 import '../shared/errors/auth_exception.dart';
@@ -54,8 +55,13 @@ class LoginController {
       }
     }
 
-    await Future.delayed(Duration(seconds: 3));
     _stateButtonController.add(Sign.IS_NOT_SIGNING);
+
+    // sending userModel to HomePage
+    Navigator.of(scaffoldState.context).push(MaterialPageRoute(
+        builder: (_) => HomePage(
+              userModel: userModel,
+            )));
   }
 
   String validateEmail(String email) {
