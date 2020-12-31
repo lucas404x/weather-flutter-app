@@ -1,5 +1,5 @@
 abstract class UserModel {
-  final String uid;
+  final dynamic uid;
   final String email;
 
   UserModel(this.uid, this.email);
