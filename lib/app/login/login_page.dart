@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../shared/enums/sign_enum.dart';
 import 'login_controller.dart';
 import 'repositories/auth_firebase.dart';
 
@@ -104,18 +105,18 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 40),
                   Container(
                     width: _size.width,
-                    child: StreamBuilder<bool>(
+                    child: StreamBuilder<Sign>(
                       stream: _loginController.isSigningIn,
-                      initialData: false,
+                      initialData: Sign.IS_NOT_SIGNING,
                       builder: (context, snapshot) => OutlineButton(
                         borderSide: BorderSide(color: Colors.purple),
                         highlightedBorderColor: Colors.white,
                         splashColor: Colors.white.withOpacity(.1),
-                        onPressed: !snapshot.data
+                        onPressed: snapshot.data == Sign.IS_NOT_SIGNING
                             ? () =>
                                 _loginController.doAuth(Scaffold.of(context))
                             : null,
-                        child: !snapshot.data
+                        child: snapshot.data == Sign.IS_NOT_SIGNING
                             ? Text(
                                 'Sign in',
                                 style:

@@ -6,7 +6,8 @@ class FirebaseUserModel extends UserModel {
   final String uid;
   final String email;
 
-  FirebaseUserModel({@required this.uid, @required this.email});
+  FirebaseUserModel({@required this.uid, @required this.email})
+      : super(uid, email);
 
   factory FirebaseUserModel.fromFirebaseUser(User user) =>
       FirebaseUserModel(uid: user.uid, email: user.email);
