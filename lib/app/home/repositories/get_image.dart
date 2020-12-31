@@ -1,15 +1,13 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-import '../../shared/models/image.dart';
 
+import '../../shared/const/image_api.dart';
+import '../../shared/models/image.dart';
 import 'get_image_interface.dart';
 
 class GetImageRepository implements IGetImage {
-  final String endpoint;
   final Dio dio;
 
-  const GetImageRepository({@required this.endpoint, @required this.dio});
+  const GetImageRepository(this.dio);
 
   @override
   Future<ImageModel> getImageByCountry(Map<String, dynamic> parameters) {
@@ -21,9 +19,8 @@ class GetImageRepository implements IGetImage {
     Response response;
 
     try {
-      response = await dio.get(endpoint, queryParameters: parameters);
+      response = await dio.get(GET_IMAGE_ENDPOINT, queryParameters: parameters);
     } on DioError catch (err) {
-      print(endpoint);
       print(err);
 
       return null;
