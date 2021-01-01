@@ -10,7 +10,7 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
   GetWeatherInfoRepository(this.dio);
 
   @override
-  Future<LocationModel> getCurrentLocation(Map parameters) async {
+  Future<LocationModel> getCurrentLocation(Map<String, dynamic> parameters) async {
     Response<Map<String, dynamic>> cityInfo;
     Response<Map<String, dynamic>> weatherInfo;
 
@@ -30,7 +30,7 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
       weatherInfo = await dio.get('$CURRENT_CONDITIONS_ENDPOINT/$locationKey',
           queryParameters: parameters);
     } on DioError catch (e) {
-      print(e);
+      print(e.error);
 
       return null;
     }
@@ -44,7 +44,7 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
   }
 
   @override
-  Future<List<LocationModel>> getMatchLocations(Map parameters) async {
+  Future<List<LocationModel>> getMatchLocations(Map<String, dynamic> parameters) async {
     Response<List> response;
 
     try {
