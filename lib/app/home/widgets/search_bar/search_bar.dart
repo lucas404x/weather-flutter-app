@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../search/search_page.dart';
+import '../../../shared/models/user.dart';
 
 class SearchBar extends StatelessWidget {
   final double width;
   final double height;
 
-  const SearchBar({Key key, @required this.width, @required this.height})
+  final UserModel userModel;
+
+  const SearchBar(
+      {Key key, @required this.width, @required this.height, @required this.userModel})
       : super(key: key);
 
   @override
@@ -18,7 +22,7 @@ class SearchBar extends StatelessWidget {
         highlightColor: Colors.white.withOpacity(0),
         borderRadius: BorderRadius.circular(30),
         onTap: () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => SearchPage())),
+            .push(MaterialPageRoute(builder: (_) => SearchPage(userModel))),
         child: Container(
           child: Padding(
             padding: const EdgeInsets.all(15),
