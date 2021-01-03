@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../shared/const/weather_search_api.dart' as weather;
 import '../shared/const/image_api.dart' as image;
+import '../shared/const/weather_search_api.dart' as weather;
 import '../shared/data/firestore_database.dart';
 import '../shared/models/image.dart';
+import '../shared/models/location.dart';
 import '../shared/models/user.dart';
 import '../shared/repositories/get_weather_info.dart';
 import 'home_controller.dart';
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
         ),
         storage: FirestoreDatabase(FirebaseFirestore.instance),
         userModel: widget.userModel);
+
+    _homeController.getUserLocations();
 
     super.initState();
   }
@@ -73,10 +76,11 @@ class _HomePageState extends State<HomePage> {
           child: Scaffold(
             body: Column(
               children: [
+                SizedBox(height: 100),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Hello Matt',
+                      "Hi ${_homeController.userModel.name ?? "there"}!👋",
                       style: GoogleFonts.montserrat(
                         fontSize: 32,
                         color: Colors.white,
@@ -98,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                 SearchBar(
                   width: _width,
                   height: _height * .07,
+                  userModel: _homeController.userModel,
                 ),
                 SizedBox(height: _height * .16),
                 Align(
