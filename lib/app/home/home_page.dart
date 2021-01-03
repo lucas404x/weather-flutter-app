@@ -115,7 +115,21 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                     ),
                   ),
-                )
+                ),
+                StreamBuilder<List<LocationModel>>(
+                    stream: _homeController.userLocations,
+                    builder: (_, snapshot) => snapshot.hasData
+                        ? Expanded(
+                            child: ListView.builder(
+                            itemBuilder: (_, index) => Text(
+                              snapshot.data[index].name,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            itemCount: snapshot.data.length,
+                          ))
+                        : Container(
+                            color: Colors.transparent,
+                          ))
               ],
             ),
           ),
