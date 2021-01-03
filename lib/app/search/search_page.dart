@@ -1,21 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../shared/const/weather_search_api.dart' as weather;
+import '../shared/data/firestore_database.dart';
 import '../shared/models/location.dart';
+import '../shared/models/user.dart';
 import '../shared/repositories/get_weather_info.dart';
 import 'search_controller.dart';
 import 'widgets/city_card/city_card.dart';
 
 class SearchPage extends StatefulWidget {
+  final UserModel userModel;
+
+  SearchPage(this.userModel);
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _searchController = SearchController(
-      GetWeatherInfoRepository(Dio(BaseOptions(baseUrl: weather.BASE_URL))));
+  SearchController _searchController;
+
+  @override
+  void initState() {
+    _searchController = SearchController(
+        GetWeatherInfoRepository(Dio(BaseOptions(baseUrl: weather.BASE_URL))),
+        FirestoreDatabase(FirebaseFirestore.instance),
+        widget.userModel);
+        
+    super.initState();
+  }
 
   @override
   void dispose() {

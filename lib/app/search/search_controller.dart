@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../shared/const/weather_search_api.dart' as weather;
+import '../shared/data/storage_interface.dart';
 import '../shared/models/location.dart';
+import '../shared/models/user.dart';
 import '../shared/repositories/get_weather_info_interface.dart';
 
 class SearchController {
-  SearchController(this.getWeatherInfo) {
+  SearchController(this.getWeatherInfo, this.storage, this.userModel) {
     _inputQuery
         .debounceTime(Duration(milliseconds: 650))
         .listen(_searchMatchLocations);
   }
 
   final IGetWeatherInfo getWeatherInfo;
+  final IStorage storage;
+  
+  final UserModel userModel;
 
   final _inputQuery = BehaviorSubject<String>();
 
@@ -36,7 +41,7 @@ class SearchController {
   }
 
   Future<void> selectLocation(BuildContext context, LocationModel location) async {
-    print(location.locationKey);
+    await storage.saveLocation(userModel, location);
     Navigator.pop(context);
   }
 

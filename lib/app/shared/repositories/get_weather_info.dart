@@ -10,41 +10,31 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
   GetWeatherInfoRepository(this.dio);
 
   @override
-  Future<LocationModel> getCurrentLocation(Map parameters) async {
-    Response<Map<String, dynamic>> cityInfo;
+  Future<Map<String, dynamic>> getCurrentLocation(
+      Map<String, dynamic> parameters) async {
     Response<Map<String, dynamic>> weatherInfo;
 
     String locationKey = parameters["location_key"];
     parameters.remove("location_key");
 
     try {
-      cityInfo = await dio.get('$CITY_INFO_ENDPOINT/$locationKey',
-          queryParameters: parameters);
-    } on DioError catch (e) {
-      print(e);
-
-      return null;
-    }
-
-    try {
       weatherInfo = await dio.get('$CURRENT_CONDITIONS_ENDPOINT/$locationKey',
           queryParameters: parameters);
     } on DioError catch (e) {
-      print(e);
+      print(e.error);
 
       return null;
     }
 
-    return LocationModel(
-        name: cityInfo.data["LocalizedName"],
-        administrativeArea: cityInfo.data["AdministrativeArea"]["LocalizedName"],
-        locationKey: locationKey,
-        weather: weatherInfo.data["WeatherText"],
-        temperatureInCelsius: weatherInfo.data["Temperature"]["Metric"]["Value"]);
+    return {
+      "weather": weatherInfo.data["WeatherText"],
+      "temperature": weatherInfo.data["Temperature"]["Metric"]["Value"]
+    };
   }
 
   @override
-  Future<List<LocationModel>> getMatchLocations(Map parameters) async {
+  Future<List<LocationModel>> getMatchLocations(
+      Map<String, dynamic> parameters) async {
     Response<List> response;
 
     try {
@@ -58,11 +48,10 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
 
     return response.data
         .map((e) => LocationModel(
-            name: e["LocalizedName"],
-            locationKey: e["Key"],
-            administrativeArea: e["AdministrativeArea"]["LocalizedName"],
-            weather: null,
-            temperatureInCelsius: null))
+              name: e["LocalizedName"],
+              locationKey: e["Key"],
+              administrativeArea: e["AdministrativeArea"]["LocalizedName"],
+            ))
         .cast<LocationModel>()
         .toList();
   }
