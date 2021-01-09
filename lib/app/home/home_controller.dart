@@ -53,7 +53,7 @@ class HomeController {
     if (_backgroundImage != null) return _backgroundImage;
 
     Map<String, dynamic> parameters = {
-      'query': 'cities',
+      'query': 'city',
       'client_id': ACCESS_KEY
     };
 
@@ -61,5 +61,4 @@ class HomeController {
     return _backgroundImage;
   }
 
-  Future<String> getImageByCountry(String cityName) => null;
 }
