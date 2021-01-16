@@ -13,6 +13,7 @@ import '../shared/models/user.dart';
 import '../shared/repositories/get_weather_info.dart';
 import 'home_controller.dart';
 import 'repositories/get_image.dart';
+import 'widgets/city_info/city_info_card_page.dart';
 import 'widgets/search_bar/search_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,6 +51,8 @@ class _HomePageState extends State<HomePage> {
     final _width = _deviceInfo.size.width;
     final _height = _deviceInfo.size.height;
     final _dpr = _deviceInfo.devicePixelRatio;
+
+    final double _cityInfoCardWidth = 150;
 
     return Stack(
       children: [
@@ -116,20 +119,35 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                StreamBuilder<List<LocationModel>>(
-                    stream: _homeController.userLocations,
+                FutureBuilder<Stream>(
+                    future: _homeController.getUserLocations(),
                     builder: (_, snapshot) => snapshot.hasData
-                        ? Expanded(
-                            child: ListView.builder(
-                            itemBuilder: (_, index) => Text(
-                              snapshot.data[index].name,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            itemCount: snapshot.data.length,
-                          ))
-                        : Container(
-                            color: Colors.transparent,
-                          ))
+                        ? StreamBuilder<List<LocationModel>>(
+                            stream: snapshot.data,
+                            builder: (_, snapshot) => snapshot.hasData
+                                ? Expanded(
+                                    child: ListView.builder(
+                                      physics: BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (_, index) {
+                                        var city = snapshot.data[index];
+                                        print(_homeController.listImages);
+
+                                        return Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: CityInfoCard(
+                                            city: city,
+                                            width: _cityInfoCardWidth,
+                                          ),
+                                        );
+                                      },
+                                      itemCount: snapshot.data.length,
+                                    ),
+                                  )
+                                : Container(
+                                    color: Colors.transparent,
+                                  ))
+                        : Center(child: CircularProgressIndicator()))
               ],
             ),
           ),
