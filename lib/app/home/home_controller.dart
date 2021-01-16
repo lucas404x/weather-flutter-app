@@ -25,19 +25,22 @@ class HomeController {
 
   UserModel userModel;
 
-  Stream<List<LocationModel>> _userLocations;
+  List<ImageModel> _listImages;
+  List<ImageModel> get listImages => _listImages;
 
-  Stream<List<LocationModel>> get userLocations => _userLocations;
+  Future<Stream<List<LocationModel>>> getUserLocations() async {
+    Stream<List<LocationModel>> userLocations;
 
-  Future<void> getUserLocations() async {
     try {
-      _userLocations = storage.getAllLocations(userModel);
+      userLocations = storage.getAllLocations(userModel);
     } on StorageException catch (e) {
       if (e.runtimeType == UserDoesNotExists) {
         await storage.createUser(userModel);
-        _userLocations = storage.getAllLocations(userModel);
+        userLocations = storage.getAllLocations(userModel);
       }
     }
+    
+    return userLocations;
   }
 
   Future<Map<String, dynamic>> getLocation(LocationModel location) async {
@@ -53,12 +56,12 @@ class HomeController {
     if (_backgroundImage != null) return _backgroundImage;
 
     Map<String, dynamic> parameters = {
-      'query': 'city',
-      'client_id': ACCESS_KEY
+      'query': 'cities',
+      'client_id': ACCESS_KEY,
+      'per_page': 1
     };
 
     _backgroundImage = await getImage.getRandomImage(parameters);
     return _backgroundImage;
   }
-
 }
