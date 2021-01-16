@@ -12,7 +12,7 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
   @override
   Future<Map<String, dynamic>> getCurrentLocation(
       Map<String, dynamic> parameters) async {
-    Response<Map<String, dynamic>> weatherInfo;
+    Response weatherInfo;
 
     String locationKey = parameters["location_key"];
     parameters.remove("location_key");
@@ -26,9 +26,11 @@ class GetWeatherInfoRepository implements IGetWeatherInfo {
       return null;
     }
 
+    print(weatherInfo.data);
+
     return {
-      "weather": weatherInfo.data["WeatherText"],
-      "temperature": weatherInfo.data["Temperature"]["Metric"]["Value"]
+      "weather": weatherInfo.data[0]["WeatherText"],
+      "temperature": weatherInfo.data[0]["Temperature"]["Metric"]["Value"]
     };
   }
 
